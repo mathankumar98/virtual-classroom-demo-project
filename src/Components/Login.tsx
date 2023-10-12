@@ -8,9 +8,33 @@ function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [emailError, setEmailError] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string>('');
+
+
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+    const passwordRegex = /^.{6,}$/;
+
+    const validateEmail = () => {
+        if (!emailRegex.test(email)) {
+            setEmailError('Invalid email address');
+        } else {
+            setEmailError('');
+        }
+    };
+
+    const validatePassword = () => {
+        if (!passwordRegex.test(password)) {
+            setPasswordError('Password must be at least 6 characters');
+        } else {
+            setPasswordError('');
+        }
+    };
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
+        validateEmail();
+        validatePassword();
         if (emailId === email && passWord === password) {
             navigate("/Home");
         }
@@ -42,8 +66,10 @@ function Login() {
                                 className="mt-1 p-2 w-80 border rounded-md"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                onBlur={validateEmail}
                                 required
                             />
+                            <div className="error">{emailError}</div>
                         </div>
                         <div className="mb-4">
                             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -55,8 +81,10 @@ function Login() {
                                 className="mt-1 p-2  w-80 border rounded-md"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                onBlur={validatePassword}
                                 required
                             />
+                            <div className="error">{passwordError}</div>
                         </div>
                         <button
                             type="submit"
